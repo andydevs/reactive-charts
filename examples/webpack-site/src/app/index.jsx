@@ -1,7 +1,9 @@
-import React from "react"
-import { PieChart, PieStencil, degrees } from "reactive-charts"
+import React, { useEffect, useState } from "react"
+import { PieChart, PieStencil } from "reactive-charts"
 
-export function App() {
+const degrees = Math.PI / 180
+
+function PieChartExample() {
     const pieStyle = {
         svg: {
             width: 900,
@@ -20,31 +22,39 @@ export function App() {
         labelHeight: 2,
     }
 
+    const [categories, setCategories] = useState([])
 
-    const categories = [
-        { label: "Technology", value: 340, color: "#4e79a7" },
-        { label: "Healthcare", value: 280, color: "#f28e2b" },
-        { label: "Finance", value: 210, color: "#e15759" },
-        { label: "Energy", value: 175, color: "#76b7b2" },
-        { label: "Consumer", value: 130, color: "#59a14f" },
-        { label: "Industrials", value: 95, color: "#edc948" },
-        { label: "Materials", value: 42, color: "#b07aa1" },
-        { label: "Utilities", value: 28, color: "#ff9da7" },
-        { label: "Real Estate", value: 18, color: "#9c755f" },
-        { label: "Telecom", value: 12, color: "#bab0ac" },
-    ]
+    useEffect(() => {
+        setTimeout(() => {
+            setCategories([
+                { label: "Technology", value: 340, color: "#4e79a7" },
+                { label: "Healthcare", value: 280, color: "#f28e2b" },
+                { label: "Finance", value: 210, color: "#e15759" },
+                { label: "Energy", value: 175, color: "#76b7b2" },
+                { label: "Consumer", value: 130, color: "#59a14f" },
+                { label: "Industrials", value: 95, color: "#edc948" },
+                { label: "Materials", value: 42, color: "#b07aa1" },
+                { label: "Utilities", value: 28, color: "#ff9da7" },
+                { label: "Real Estate", value: 18, color: "#9c755f" },
+                { label: "Telecom", value: 12, color: "#bab0ac" },
+            ])
+        }, Math.random() * 10000)
+    }, [])
 
+    if (categories.length == 0) {
+        return <PieStencil style={pieStyle} />
+    } else {
+        return <PieChart style={pieStyle} categories={categories} />
+    }
+}
 
+export function App() {
     return (
         <div className="app-container">
             <h1>Reactive Charts Examples!</h1>
             <div className="example">
                 <h2>Pie Chart</h2>
-                <PieChart style={pieStyle} categories={categories}/>
-            </div>
-            <div className="example">
-                <h2>Pie Stencil</h2>
-                <PieStencil style={pieStyle}/>
+                <PieChartExample />
             </div>
         </div>
     )

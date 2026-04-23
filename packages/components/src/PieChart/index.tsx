@@ -7,16 +7,6 @@ export interface PieCategory {
     color: string
 }
 
-export const mrlCatLabel = _.property<PieCategory, PieCategory["label"]>(
-    "label",
-)
-export const mrlCatValue = _.property<PieCategory, PieCategory["value"]>(
-    "value",
-)
-export const mrlCatColor = _.property<PieCategory, PieCategory["color"]>(
-    "color",
-)
-
 export interface PieStyle {
     svg: {
         width: number
@@ -35,16 +25,17 @@ export interface PieStyle {
     labelHeight: number
 }
 
-export type Point = [number, number]
+type Point = [number, number]
 
-export const ZERO: Point = [0, 0]
+const angleRadius = (th: number, r: number): Point => [
+    r * Math.cos(th),
+    -r * Math.sin(th),
+]
 
-export const degrees = Math.PI / 180
-
-export const quarter = Math.PI / 2
-
-export const isLeft = (th: number): boolean =>
-    _.inRange(th, quarter, 3 * quarter)
+const moveAngleRadius = (p: Point, th: number, r: number): Point => [
+    p[0] + r * Math.cos(th),
+    p[1] - r * Math.sin(th),
+]
 
 type Slice = {
     label: string
@@ -57,11 +48,6 @@ type Slice = {
 
 const midAngle = ({ angles: { start, end } }: Slice) => (start + end) / 2
 
-const moveAngleRadius = (p: Point, th: number, r: number): Point => [
-    p[0] + r * Math.cos(th),
-    p[1] - r * Math.sin(th),
-]
-
 function slicePath(style: PieStyle, slice: Slice): string {
     let { maxRadius, donutThickness, angleGap } = style
     let cornerRadius = style.cornerRadius || 0
@@ -69,42 +55,42 @@ function slicePath(style: PieStyle, slice: Slice): string {
     let start = slice.angles.start + angleGap
     let end = slice.angles.end - angleGap
     let [x0, y0] = moveAngleRadius(
-        moveAngleRadius(ZERO, start, minRadius),
+        angleRadius(start, minRadius),
         start,
         cornerRadius,
     )
     let [x0b, y0b] = moveAngleRadius(
-        moveAngleRadius(ZERO, start, minRadius),
-        start + quarter,
+        angleRadius(start, minRadius),
+        start + Math.PI / 2,
         cornerRadius,
     )
     let [x1, y1] = moveAngleRadius(
-        moveAngleRadius(ZERO, end, minRadius),
-        end - quarter,
+        angleRadius(end, minRadius),
+        end - Math.PI / 2,
         cornerRadius,
     )
     let [x1b, y1b] = moveAngleRadius(
-        moveAngleRadius(ZERO, end, minRadius),
+        angleRadius(end, minRadius),
         end,
         cornerRadius,
     )
     let [x2, y2] = moveAngleRadius(
-        moveAngleRadius(ZERO, end, maxRadius),
+        angleRadius(end, maxRadius),
         end,
         -cornerRadius,
     )
     let [x2b, y2b] = moveAngleRadius(
-        moveAngleRadius(ZERO, end, maxRadius),
-        end - quarter,
+        angleRadius(end, maxRadius),
+        end - Math.PI / 2,
         cornerRadius,
     )
     let [x3, y3] = moveAngleRadius(
-        moveAngleRadius(ZERO, start, maxRadius),
-        start + quarter,
+        angleRadius(start, maxRadius),
+        start + Math.PI / 2,
         cornerRadius,
     )
     let [x3b, y3b] = moveAngleRadius(
-        moveAngleRadius(ZERO, start, maxRadius),
+        angleRadius(start, maxRadius),
         start,
         -cornerRadius,
     )
@@ -123,14 +109,20 @@ function slicePath(style: PieStyle, slice: Slice): string {
     `
 }
 
-function labelAnchor(
-    style: PieStyle,
-    slice: Slice,
-): { x: number; y: number; textAnchor: "end" | "start" } {
+interface LabelAnchor {
+    x: number
+    y: number
+    textAnchor: "end" | "start"
+}
+
+const isAngleLeft = (th: number): boolean =>
+    _.inRange(th, Math.PI / 2, (3 * Math.PI) / 2)
+
+function labelAnchor(style: PieStyle, slice: Slice): LabelAnchor {
     let mid = midAngle(slice)
     let y = -Math.sin(mid) * style.maxRadius - style.labelHeight
-    let x = (isLeft(mid) ? -1 : 1) * (style.maxRadius + style.labelOffset)
-    return { x, y, textAnchor: isLeft(mid) ? "end" : "start" }
+    let x = (isAngleLeft(mid) ? -1 : 1) * (style.maxRadius + style.labelOffset)
+    return { x, y, textAnchor: isAngleLeft(mid) ? "end" : "start" }
 }
 
 function labelPath(
@@ -138,7 +130,7 @@ function labelPath(
     slice: Slice,
 ): Partial<SVGAttributes<SVGLineElement>> {
     let { x: x2, y: y2 } = labelAnchor(style, slice)
-    x2 -= (isLeft(midAngle(slice)) ? -1 : 1) * style.labelPadding
+    x2 -= (isAngleLeft(midAngle(slice)) ? -1 : 1) * style.labelPadding
     y2 += style.labelHeight
     let angle = midAngle(slice)
     let x1 = style.maxRadius * Math.cos(angle)
@@ -175,6 +167,7 @@ export function PieStencil({ style }: { style: PieStyle }): ReactElement {
     )
 }
 
+// TODO: Move these into pie style
 const COLLAPSE_GROUP_LABEL = "others"
 const COLLAPSE_GROUP_COLOR = "#555"
 
@@ -190,8 +183,7 @@ export function PieChart({
 
     // Sort and truncate to max categories
     let sorted = useMemo(
-        () =>
-            _(_.cloneDeep(categories)).sortBy([mrlCatValue]).reverse().value(),
+        () => _(_.cloneDeep(categories)).sortBy(["value"]).reverse().value(),
         [categories],
     )
     let truncated = useMemo(
@@ -201,7 +193,7 @@ export function PieChart({
     console.log(`Truncated:`, truncated)
 
     // Normalize categories to angle widths
-    let total = truncated.map(mrlCatValue).reduce(_.add)
+    let total = _(truncated).map("value").reduce(_.add, 1)
     let angles = truncated.map((category) => ({
         label: category.label,
         color: category.color,
