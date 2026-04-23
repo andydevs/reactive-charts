@@ -1,5 +1,5 @@
 import React, { ReactElement, SVGAttributes, useMemo } from "react"
-import _, { slice } from "lodash"
+import _ from "lodash"
 
 export interface PieCategory {
     label: string
