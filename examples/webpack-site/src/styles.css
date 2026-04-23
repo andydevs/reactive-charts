@@ -2,6 +2,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #333;
     color: white;
+    margin: 16pt;
 }
 
 #app {
@@ -10,6 +11,19 @@ body {
 }
 
 .app-container {
-    max-width: 800px;
     margin: auto;
+}
+
+.app-container > h1 {
+    text-align: center;
+}
+
+.examples {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+}
+
+.example > h2 {
+    margin: 2pt 0pt;
+    text-align: center;
 }

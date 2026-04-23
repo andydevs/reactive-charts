@@ -52,9 +52,11 @@ export function App() {
     return (
         <div className="app-container">
             <h1>Reactive Charts Examples!</h1>
-            <div className="example">
-                <h2>Pie Chart</h2>
-                <PieChartExample />
+            <div className="examples">
+                <div className="example">
+                    <h2>Pie Chart</h2>
+                    <PieChartExample />
+                </div>
             </div>
         </div>
     )
