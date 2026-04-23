@@ -12,9 +12,9 @@
         "build:lib": "yarn workspace reactive-charts build",
         "build:lib:watch": "yarn workspace reactive-charts build:watch",
         "build:site:webpack": "yarn workspace webpack-site build",
-        "start:site:webpack": "yarn workspace webpack-site start",
-        "build": "concurrently 'yarn build:lib' 'yarn build:site:webpack'",
-        "start": "concurrently 'yarn build:lib:watch' 'yarn start:site:webpack'"
+        "serve:site:webpack": "yarn workspace webpack-site start",
+        "build": "concurrently \"yarn build:lib\" \"yarn build:site:webpack\"",
+        "start": "concurrently \"yarn build:lib:watch\" \"yarn serve:site:webpack\""
     },
     "devDependencies": {
         "concurrently": "^9.2.1"
