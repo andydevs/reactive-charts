@@ -6,12 +6,20 @@
         {
             "label": "Start Development",
             "type": "shell",
-            "command": "yarn start"
+            "command": "yarn start",
+            "dependsOn": ["Install"]
         },
         {
             "label": "Build Everything",
             "type": "shell",
-            "command": "yarn build"
+            "command": "yarn build",
+            "dependsOn": ["Install"]
+        },
+        {
+            "label": "Install",
+            "type": "shell",
+            "command": "yarn",
+            "problemMatcher": []
         }
     ]
 }
