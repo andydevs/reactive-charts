@@ -4,9 +4,11 @@
     "main": "dist/index.js",
     "license": "MIT",
     "dependencies": {
+        "lodash": "^4.18.1",
         "react": "^19.2.0"
     },
     "devDependencies": {
+        "@types/lodash": "^4.17.24",
         "@types/react": "^19.2.2",
         "tsc": "^2.0.4",
         "typescript": "^5.9.3"

@@ -1,13 +1,51 @@
 import React from "react"
-import { Button } from "reactive-charts"
+import { PieChart, PieStencil, degrees } from "reactive-charts"
 
 export function App() {
+    const pieStyle = {
+        svg: {
+            width: 900,
+            height: 600,
+        },
+        data: {
+            maxCategories: 10,
+            minimumSliceWidth: 5 * degrees,
+        },
+        angleGap: 1 * degrees,
+        maxRadius: 210,
+        donutThickness: 50,
+        cornerRadius: 3,
+        labelOffset: 35,
+        labelPadding: 4,
+        labelHeight: 2,
+    }
+
+
+    const categories = [
+        { label: "Technology", value: 340, color: "#4e79a7" },
+        { label: "Healthcare", value: 280, color: "#f28e2b" },
+        { label: "Finance", value: 210, color: "#e15759" },
+        { label: "Energy", value: 175, color: "#76b7b2" },
+        { label: "Consumer", value: 130, color: "#59a14f" },
+        { label: "Industrials", value: 95, color: "#edc948" },
+        { label: "Materials", value: 42, color: "#b07aa1" },
+        { label: "Utilities", value: 28, color: "#ff9da7" },
+        { label: "Real Estate", value: 18, color: "#9c755f" },
+        { label: "Telecom", value: 12, color: "#bab0ac" },
+    ]
+
+
     return (
-        <>
+        <div className="app-container">
             <h1>Reactive Charts Examples!</h1>
             <div className="example">
-                <Button onClick={() => console.log("Clicked!")} />
+                <h2>Pie Chart</h2>
+                <PieChart style={pieStyle} categories={categories}/>
             </div>
-        </>
+            <div className="example">
+                <h2>Pie Stencil</h2>
+                <PieStencil style={pieStyle}/>
+            </div>
+        </div>
     )
 }
