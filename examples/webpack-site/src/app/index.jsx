@@ -11,7 +11,11 @@ function PieChartExample() {
         },
         data: {
             maxCategories: 10,
-            minimumSliceWidth: 5 * degrees,
+            collapse: {
+                label: "other",
+                color: "#444",
+                minAngle: 10 * degrees,
+            },
         },
         angleGap: 1 * degrees,
         maxRadius: 210,
