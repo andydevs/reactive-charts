@@ -1,16 +1,31 @@
+/**
+ * Data transformation pipeline and SVG arc path generation for pie/donut slices.
+ */
 import _ from "lodash"
 import { moveAngleRadius, angleRadius } from "../support/point"
-import { PieCategory, PieCollapsedStyle, PieStyle } from "./types"
+import { PieCategory, PieStyle } from "./types"
 
+/** A fully resolved pie slice ready for SVG rendering. */
 export type Slice = {
     label: string
     color: string
     angles: {
+        /** Start angle in radians (0 = 3 o'clock, increases clockwise). */
         start: number
+        /** End angle in radians. */
         end: number
     }
 }
 
+/**
+ * Transforms raw category data into renderable Slice objects.
+ *
+ * Pipeline:
+ * 1. Sort by value descending and take the top `maxCategories`.
+ * 2. Normalize raw values to radians so the total spans 0–2π.
+ * 3. Optionally collapse trailing small-angle slices into a single "other" bucket.
+ * 4. Assign cumulative start/end angles to each slice.
+ */
 export function toSlices(categories: PieCategory[], { data }: PieStyle): Slice[] {
     // Data-Related style
     let maxCategories = data?.maxCategories || categories.length
@@ -51,8 +66,15 @@ export function toSlices(categories: PieCategory[], { data }: PieStyle): Slice[]
     return slices
 }
 
+/** Returns the midpoint angle of a slice in radians. */
 export const midAngle = ({ angles: { start, end } }: Slice) => (start + end) / 2
 
+/**
+ * Generates the SVG `d` attribute string for a donut slice with optional rounded corners.
+ *
+ * The path traces the inner arc, two corner arcs at each radial edge, and the outer arc,
+ * forming a closed donut segment. Corner arcs are approximated with SVG `A` commands.
+ */
 export function slicePath(style: PieStyle, slice: Slice): string {
     let { maxRadius, donutThickness, angleGap } = style
     let cornerRadius = style.cornerRadius || 0
