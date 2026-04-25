@@ -7,8 +7,9 @@
  */
 import React, { ReactElement, useMemo } from "react"
 import _ from "lodash"
-import { PieCategory, PieStyle } from "./types"
-import { Slice, slicePath, toSlices } from "./slice"
+import { PieCategory, PieStyle, SvgParams } from "./types"
+import { toSlices } from "./slice"
+import { slicePath } from "./path"
 import { labelAnchor, labelPath } from "./label"
 
 /** Props for PieStencil. */
@@ -22,15 +23,17 @@ export interface PieChartProps {
     categories: PieCategory[]
 }
 
+/** Converts SvgParams to an SVG viewBox string centered at the origin. */
+const toViewBox = ({ width: w, height: h }: SvgParams) => `${-w / 2} ${-h / 2} ${w} ${h}`
+
 /**
  * Loading skeleton for PieChart.
  * Renders an animated rotating gradient ring sized to match the given PieStyle,
  * using an SVG animateTransform so no CSS or JS animation is required.
  */
 export function PieStencil({ style }: PieStencilProps): ReactElement {
-    let { width, height } = style.svg
     return (
-        <svg viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}>
+        <svg viewBox={toViewBox(style.svg)}>
             <linearGradient id="gray-dient">
                 <stop offset="0%" stopColor="#999" />
                 <stop offset="100%" stopColor="white" />
@@ -62,10 +65,9 @@ export function PieStencil({ style }: PieStencilProps): ReactElement {
  * Slice geometry and label positions are derived from the PieStyle configuration.
  */
 export function PieChart({ style, categories }: PieChartProps): ReactElement {
-    let slices = toSlices(categories, style)
-    let { width, height } = style.svg
+    let slices = useMemo(() => toSlices(categories, style.data), [categories, style.data])
     return (
-        <svg viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}>
+        <svg viewBox={toViewBox(style.svg)}>
             {slices.map((slice) => (
                 <g key={slice.label} xlinkTitle={slice.label}>
                     <path d={slicePath(style, slice)} fill={slice.color} />

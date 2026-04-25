@@ -3,29 +3,29 @@ import { PieChart, PieStencil } from "reactive-charts"
 
 const degrees = Math.PI / 180
 
-function PieChartExample() {
-    const pieStyle = {
-        svg: {
-            width: 900,
-            height: 600,
+const pieStyle = {
+    svg: {
+        width: 900,
+        height: 600,
+    },
+    data: {
+        maxCategories: 10,
+        collapse: {
+            label: "other",
+            color: "#444",
+            minAngle: 10 * degrees,
         },
-        data: {
-            maxCategories: 10,
-            collapse: {
-                label: "other",
-                color: "#444",
-                minAngle: 10 * degrees,
-            },
-        },
-        angleGap: 1 * degrees,
-        maxRadius: 210,
-        donutThickness: 50,
-        cornerRadius: 3,
-        labelOffset: 35,
-        labelPadding: 4,
-        labelHeight: 2,
-    }
+    },
+    angleGap: 1 * degrees,
+    maxRadius: 210,
+    donutThickness: 50,
+    cornerRadius: 3,
+    labelOffset: 35,
+    labelPadding: 4,
+    labelHeight: 2,
+}
 
+function PieChartExample() {
     const [categories, setCategories] = useState([])
 
     useEffect(() => {

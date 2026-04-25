@@ -18,27 +18,31 @@ export interface PieCollapsedStyle {
     color: string
 }
 
+/** Data-shaping options applied to categories before rendering. Controls slice count and small-slice collapsing. */
+export interface PieDataStyle {
+    /** Maximum number of slices to display; excess categories are dropped or collapsed. */
+    maxCategories?: number
+    /** Collapse trailing small slices into a single bucket. */
+    collapse?: PieCollapsedStyle
+}
+
+/** Width and height of the SVG viewport, in SVG user units. */
+export interface SvgParams {
+    /** Horizontal extent of the viewport. */
+    width: number
+    /** Vertical extent of the viewport. */
+    height: number
+}
+
 /**
  * Visual and data configuration shared by PieChart and PieStencil.
  * All size values are in SVG user units.
  */
 export interface PieStyle {
     /** Dimensions of the SVG viewport. */
-    svg: {
-        width: number
-        height: number
-    }
+    svg: SvgParams
     /** Optional data-shaping options applied before rendering. */
-    data?: {
-        /** Maximum number of slices to display; excess categories are dropped or collapsed. */
-        maxCategories?: number
-        /** Collapse trailing small slices into a single bucket. */
-        collapse?: {
-            minAngle: number
-            color: string
-            label: string
-        }
-    }
+    data: PieDataStyle
     /** Angular gap between adjacent slices, in radians. */
     angleGap: number
     /** Outer radius of the donut ring. */
