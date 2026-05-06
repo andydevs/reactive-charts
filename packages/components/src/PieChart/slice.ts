@@ -2,7 +2,7 @@
  * Data transformation pipeline for pie/donut slices.
  */
 import _ from "lodash"
-import { PieCategory, PieDataStyle, PieLabel } from "./types"
+import { PieCategory, PieLabel, PieStyle } from "./types"
 
 /** A fully resolved pie slice ready for SVG rendering. */
 export type Slice = {
@@ -26,9 +26,9 @@ export type Slice = {
  * 3. Optionally collapse trailing small-angle slices into a single "other" bucket.
  * 4. Assign cumulative start/end angles to each slice.
  */
-export function toSlices(categories: PieCategory[], data: PieDataStyle): Slice[] {
+export function toSlices(categories: PieCategory[], style: PieStyle): Slice[] {
     // Data-Related style
-    let maxCategories = data.maxCategories || categories.length
+    let maxCategories = style.maxCategories || categories.length
 
     // Get top n categories and normalize values
     let sortedAndTruncated = _(categories)
@@ -45,8 +45,8 @@ export function toSlices(categories: PieCategory[], data: PieDataStyle): Slice[]
         .value()
 
     // Collapse small angles
-    if (data?.collapse) {
-        let { label, minAngle } = data.collapse
+    if (style.categoryCollapse) {
+        let { label, minAngle } = style.categoryCollapse
         let value = 0
         while (angles.length > 0 && value < minAngle) {
             value += angles.pop()?.value || 0

@@ -65,7 +65,7 @@ export function PieStencil({ style }: PieStencilProps): ReactElement {
  * Slice geometry and label positions are derived from the PieStyle configuration.
  */
 export function PieChart({ style, categories }: PieChartProps): ReactElement {
-    let slices = useMemo(() => toSlices(categories, style.data), [categories, style.data])
+    let slices = useMemo(() => toSlices(categories, style), [categories, style])
     return (
         <svg viewBox={toViewBox(style.svg)}>
             {slices.map((slice) => (
