@@ -1,3 +1,5 @@
+import { SvgParams } from '../types'
+
 /** Text label rendered next to a pie slice. */
 export interface PieLabel {
     /** Display text for the label. */
@@ -22,14 +24,6 @@ export interface PieCollapsedStyle {
     label: PieLabel
     /** Slices whose computed angle is smaller than this (radians) are folded into the bucket. */
     minAngle: number
-}
-
-/** Width and height of the SVG viewport, in SVG user units. */
-export interface SvgParams {
-    /** Horizontal extent of the viewport. */
-    width: number
-    /** Vertical extent of the viewport. */
-    height: number
 }
 
 /**
