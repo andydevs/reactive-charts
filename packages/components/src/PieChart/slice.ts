@@ -2,14 +2,15 @@
  * Data transformation pipeline for pie/donut slices.
  */
 import _ from "lodash"
-import { PieCategory, PieDataStyle } from "./types"
+import { PieCategory, PieDataStyle, PieLabel } from "./types"
 
 /** A fully resolved pie slice ready for SVG rendering. */
 export type Slice = {
-    label: string
-    color: string
+    /** Label for slice */
+    label: PieLabel
+    /** Angle range of slice (start and end) */
     angles: {
-        /** Start angle in radians (0 = 3 o'clock, increases clockwise). */
+        /** Start angle in radians. */
         start: number
         /** End angle in radians. */
         end: number
@@ -40,25 +41,25 @@ export function toSlices(categories: PieCategory[], data: PieDataStyle): Slice[]
     // Normalize values to angles
     let total = _(sortedAndTruncated).map("value").sum()
     let angles = _(sortedAndTruncated)
-        .map((cat) => ({ ...cat, value: (Math.PI * 2 * cat.value) / total }))
+        .map((cat) => _.update(cat, "value", (x) => (Math.PI * 2 * x) / total))
         .value()
 
     // Collapse small angles
     if (data?.collapse) {
-        let { label, color, minAngle } = data.collapse
+        let { label, minAngle } = data.collapse
         let value = 0
         while (angles.length > 0 && value < minAngle) {
             value += angles.pop()?.value || 0
         }
-        angles.push({ label, color, value })
+        angles.push({ label, value })
     }
 
     // Generate slices
     let start = 0
     let slices: Slice[] = []
-    for (const { label, color, value } of angles) {
+    for (const { label, value } of angles) {
         let end = start + value
-        slices.push({ label, color, angles: { start, end } })
+        slices.push({ label, angles: { start, end } })
         start = end
     }
     return slices

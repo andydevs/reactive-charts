@@ -11,15 +11,14 @@ const pieStyle = {
     data: {
         maxCategories: 10,
         collapse: {
-            label: "other",
-            color: "#444",
+            label: { text: "others...", color: "#444", fontStyle: "italic" },
             minAngle: 10 * degrees,
         },
     },
-    angleGap: 1 * degrees,
-    maxRadius: 210,
-    donutThickness: 50,
-    cornerRadius: 3,
+    sliceAngleGap: 1 * degrees,
+    sliceMaxRadius: 210,
+    sliceThickness: 50,
+    sliceCornerRadius: 3,
     labelOffset: 35,
     labelPadding: 4,
     labelHeight: 2,
@@ -31,16 +30,16 @@ function PieChartExample() {
     useEffect(() => {
         setTimeout(() => {
             setCategories([
-                { label: "Technology", value: 340, color: "#4e79a7" },
-                { label: "Healthcare", value: 280, color: "#f28e2b" },
-                { label: "Finance", value: 210, color: "#e15759" },
-                { label: "Energy", value: 175, color: "#76b7b2" },
-                { label: "Consumer", value: 130, color: "#59a14f" },
-                { label: "Industrials", value: 95, color: "#edc948" },
-                { label: "Materials", value: 42, color: "#b07aa1" },
-                { label: "Utilities", value: 28, color: "#ff9da7" },
-                { label: "Real Estate", value: 18, color: "#9c755f" },
-                { label: "Telecom", value: 12, color: "#bab0ac" },
+                { label: { text: "Technology", color: "#4e79a7", fontStyle: "normal" }, value: 340 },
+                { label: { text: "Healthcare", color: "#f28e2b", fontStyle: "normal" }, value: 280 },
+                { label: { text: "Finance", color: "#e15759", fontStyle: "normal" }, value: 210 },
+                { label: { text: "Energy", color: "#76b7b2", fontStyle: "normal" }, value: 175 },
+                { label: { text: "Consumer", color: "#59a14f", fontStyle: "normal" }, value: 130 },
+                { label: { text: "Industrials", color: "#edc948", fontStyle: "normal" }, value: 95 },
+                { label: { text: "Materials", color: "#b07aa1", fontStyle: "normal" }, value: 42 },
+                { label: { text: "Utilities", color: "#ff9da7", fontStyle: "normal" }, value: 28 },
+                { label: { text: "Real Estate", color: "#9c755f", fontStyle: "normal" }, value: 18 },
+                { label: { text: "Telecom", color: "#bab0ac", fontStyle: "normal" }, value: 12 },
             ])
         }, Math.random() * 10000)
     }, [])

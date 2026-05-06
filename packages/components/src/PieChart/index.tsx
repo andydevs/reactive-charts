@@ -50,10 +50,10 @@ export function PieStencil({ style }: PieStencilProps): ReactElement {
             <circle
                 x={0}
                 y={0}
-                r={style.maxRadius - style.donutThickness / 2}
+                r={style.sliceMaxRadius - style.sliceThickness / 2}
                 stroke="url(#gray-dient)"
                 fillOpacity={0}
-                strokeWidth={style.donutThickness}
+                strokeWidth={style.sliceThickness}
             />
         </svg>
     )
@@ -69,11 +69,11 @@ export function PieChart({ style, categories }: PieChartProps): ReactElement {
     return (
         <svg viewBox={toViewBox(style.svg)}>
             {slices.map((slice) => (
-                <g key={slice.label} xlinkTitle={slice.label}>
-                    <path d={slicePath(style, slice)} fill={slice.color} />
-                    <line {...labelPath(style, slice)} stroke={slice.color} />
-                    <text {...labelAnchor(style, slice)} fill="white">
-                        {slice.label}
+                <g key={slice.label.text} xlinkTitle={slice.label.text}>
+                    <path d={slicePath(style, slice)} fill={slice.label.color} />
+                    <line {...labelPath(style, slice)} stroke={slice.label.color} />
+                    <text {...labelAnchor(style, slice)} fontStyle={slice.label.fontStyle} fill="white">
+                        {slice.label.text}
                     </text>
                 </g>
             ))}

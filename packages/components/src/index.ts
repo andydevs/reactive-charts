@@ -1,4 +1,3 @@
 /** Public API for the reactive-charts component library. */
-export { Button } from "./Button"
-export { type PieCategory, type PieStyle } from "./PieChart"
+export type { PieCategory, PieStyle } from "./PieChart/types"
 export { PieChart, PieStencil } from "./PieChart/index"
