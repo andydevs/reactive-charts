@@ -5,14 +5,18 @@ import _ from 'lodash'
 import { PieCategory, PieCollapsedStyle, PieLabel, PieStyle } from './types'
 import { Slice, slicePath, sliceLabel } from './slice'
 
-type Group = { label: PieLabel; value: number }
-
+/** Converts each category's raw value to its proportional angle in the full circle (0–2π). */
 function normalize(cats: PieCategory[]): PieCategory[] {
     let total = _(cats).map('value').sum()
     return cats.map((cat) => _.update(cat, 'value', (x) => (Math.PI * 2 * x) / total))
 }
 
-function collapseSmallAngles(collapse: PieCollapsedStyle, groups: Group[]): Group[] {
+/**
+ * Pops categories from the end (smallest values first, since the list is sorted descending)
+ * until their combined angle meets `collapse.minAngle`, then replaces them with
+ * a single collapsed category using the provided label and accumulated value.
+ */
+function collapseSmallCategories(collapse: PieCollapsedStyle, groups: PieCategory[]): PieCategory[] {
     let groupsClone = _.cloneDeep(groups)
     let { label, minAngle } = collapse
     let value = 0
@@ -23,6 +27,7 @@ function collapseSmallAngles(collapse: PieCollapsedStyle, groups: Group[]): Grou
     return groupsClone
 }
 
+/** Converts an array of angular widths into sequential [startAngle, endAngle] pairs. */
 function angleRanges(angles: number[]): [number, number][] {
     let startAngle = 0
     let ranges: [number, number][] = []
@@ -35,7 +40,8 @@ function angleRanges(angles: number[]): [number, number][] {
     return ranges
 }
 
-function createSlices(style: PieStyle, groups: Group[], ranges: [number, number][]): Slice[] {
+/** Pairs each group with its angle range and produces the final Slice objects. */
+function createSlices(style: PieStyle, groups: PieCategory[], ranges: [number, number][]): Slice[] {
     console.groupCollapsed('PieChart/createSlices')
     let slices = _.zipWith(groups, ranges, ({ label }, [startAngle, endAngle]) => {
         let labelStyle = sliceLabel(style, startAngle, endAngle)
@@ -46,13 +52,21 @@ function createSlices(style: PieStyle, groups: Group[], ranges: [number, number]
     return slices
 }
 
+/**
+ * Main data transformation pipeline.
+ *
+ * 1. Sort categories by value (descending) and take at most `style.maxCategories`.
+ * 2. Normalize values to angular proportions (0–2π).
+ * 3. Optionally collapse small trailing slices into a single "other" bucket.
+ * 4. Compute sequential angle ranges and generate Slice geometry.
+ */
 export function toSlices(categories: PieCategory[], style: PieStyle): Slice[] {
     console.group('PieChart/toSlices')
     let maxCategories = style.maxCategories || categories.length
     let sortedAndTruncated = _(categories).sortBy(['value']).reverse().take(maxCategories).value()
     let groups = normalize(sortedAndTruncated)
     if (style.categoryCollapse) {
-        groups = collapseSmallAngles(style.categoryCollapse, groups)
+        groups = collapseSmallCategories(style.categoryCollapse, groups)
     }
     console.log('Groups:', groups)
     let ranges = angleRanges(_.map(groups, 'value'))

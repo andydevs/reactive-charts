@@ -21,27 +21,24 @@ import { PieChart, PieCategory, PieStyle } from 'reactive-charts'
 
 const style: PieStyle = {
   svg: { width: 900, height: 600 },
-  angleGap: 0.017,        // gap between slices, in radians (~1°)
-  maxRadius: 210,         // outer radius of the donut ring
-  donutThickness: 50,     // radial thickness of the ring
-  cornerRadius: 3,        // rounded corners on each slice edge
-  labelOffset: 35,        // horizontal distance from ring to label line endpoint
-  labelPadding: 4,        // gap between label line endpoint and label text
-  labelHeight: 2,         // vertical offset for label text above the line
-  data: {
-    maxCategories: 10,    // show at most 10 slices
-    collapse: {
-      label: 'Other',
-      color: '#444',
-      minAngle: 0.175,    // collapse slices smaller than ~10° into "Other"
-    },
+  sliceAngleGap: 0.017,       // gap between slices, in radians (~1°)
+  sliceMaxRadius: 210,         // outer radius of the donut ring
+  sliceThickness: 50,          // radial thickness of the ring
+  sliceCornerRadius: 3,        // rounded corners on each slice edge
+  labelOffset: 35,             // horizontal distance from ring to label line endpoint
+  labelPadding: 4,             // gap between label line endpoint and label text
+  labelHeight: 2,              // vertical offset for label text above the line
+  maxCategories: 10,           // show at most 10 slices
+  categoryCollapse: {
+    label: { text: 'Other', color: '#444', fontStyle: 'normal' },
+    minAngle: 0.175,           // collapse slices smaller than ~10° into "Other"
   },
 }
 
 const categories: PieCategory[] = [
-  { label: 'Technology', value: 340, color: '#4e79a7' },
-  { label: 'Healthcare',  value: 280, color: '#f28e2b' },
-  { label: 'Finance',     value: 210, color: '#e15759' },
+  { label: { text: 'Technology', color: '#4e79a7', fontStyle: 'normal' }, value: 340 },
+  { label: { text: 'Healthcare',  color: '#f28e2b', fontStyle: 'normal' }, value: 280 },
+  { label: { text: 'Finance',     color: '#e15759', fontStyle: 'normal' }, value: 210 },
 ]
 
 function MyChart() {

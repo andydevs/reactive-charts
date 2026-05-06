@@ -10,6 +10,14 @@ export type Slice = { label: PieLabel; labelStyle: SliceLabelStyle; path: string
 
 export type SliceLabelStyle = { anchor: Partial<SVGAttributes<SVGTextElement>>; line: Partial<SVGAttributes<SVGLineElement>> }
 
+/**
+ * Computes SVG attributes for a slice's label line and text anchor.
+ *
+ * The label is placed at the midpoint angle of the slice: left-side slices
+ * (π/2 – 3π/2) anchor their text to the right and extend leftward; right-side
+ * slices do the opposite. The line runs from the outer ring edge to a fixed
+ * horizontal endpoint determined by `style.labelOffset`.
+ */
 export function sliceLabel(style: PieStyle, startAngle: number, endAngle: number): SliceLabelStyle {
     console.groupCollapsed(`PieChart/sliceLabel`)
     // Middle angle and quadrant
