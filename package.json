@@ -5,14 +5,13 @@
     "author": "Andydevs <akanshul97@gmail.com>",
     "license": "MIT",
     "workspaces": [
-        "packages/*",
-        "examples/*"
+        "workspaces/*"
     ],
     "scripts": {
         "build:lib": "yarn workspace reactive-charts build",
         "build:lib:watch": "yarn workspace reactive-charts build:watch",
-        "build:site:webpack": "yarn workspace webpack-site build",
-        "serve:site:webpack": "yarn workspace webpack-site start",
+        "build:site:webpack": "yarn workspace demo-site build",
+        "serve:site:webpack": "yarn workspace demo-site start",
         "build": "concurrently \"yarn build:lib\" \"yarn build:site:webpack\"",
         "start": "concurrently \"yarn build:lib:watch\" \"yarn serve:site:webpack\""
     },
